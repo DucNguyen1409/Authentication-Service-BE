@@ -27,24 +27,19 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public List<TokenDto> findAllValidTokenByUserId(String userId) {
+    public List<Token> findAllValidTokenByUserId(String userId) {
         List<Token> entities = repo.findAllValidTokenByUserId(userId);
         if (CollectionUtils.isEmpty(entities)) {
             return new ArrayList<>();
         }
 
-        return ObjectMapperUtils.mapAll(entities, TokenDto.class);
+        return entities;
     }
 
     @Override
-    public TokenDto findByToken(String token) {
+    public Token findByToken(String token) {
         Optional<Token> optToken = repo.findByToken(token);
-        if (optToken.isEmpty()) {
-            return new TokenDto();
-        }
-
-
-        return ObjectMapperUtils.map(optToken.get(), TokenDto.class);
+        return optToken.orElseGet(Token::new);
     }
 
     @Override
@@ -52,4 +47,5 @@ public class TokenServiceImpl implements TokenService {
     public void saveAll(List<Token> tokens) {
         repo.saveAll(tokens);
     }
+
 }

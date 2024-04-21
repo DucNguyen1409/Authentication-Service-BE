@@ -1,9 +1,7 @@
 package com.example.spring.authentication.service.impl;
 
 import com.example.spring.authentication.common.Constant;
-import com.example.spring.authentication.dto.TokenDto;
 import com.example.spring.authentication.entity.Token;
-import com.example.spring.authentication.mapper.ObjectMapperUtils;
 import com.example.spring.authentication.service.LogoutService;
 import com.example.spring.authentication.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,13 +33,13 @@ public class LogoutServiceImpl implements LogoutService, LogoutHandler {
         // extract token from header
         jwt = authHeader.substring(Constant.JWT_BEARER_INDEX);
 
-        TokenDto storedTokenDto = tokenService.findByToken(jwt);
+        Token storedToken = tokenService.findByToken(jwt);
 
-        if (Objects.nonNull(storedTokenDto.getId())) {
-            storedTokenDto.setExpired(true);
-            storedTokenDto.setRevoked(true);
+        if (Objects.nonNull(storedToken.getId())) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
 
-            tokenService.save(ObjectMapperUtils.map(storedTokenDto, Token.class));
+            tokenService.save(storedToken);
         }
     }
 

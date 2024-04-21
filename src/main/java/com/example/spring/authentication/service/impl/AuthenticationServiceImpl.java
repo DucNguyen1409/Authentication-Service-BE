@@ -52,10 +52,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         // find user token before generate new one.
-        UserDto userDto = userService.findByEmail(requestDto.getEmail());
+        User user = userService.findByEmail(requestDto.getEmail());
 
         // revoke user token
-        User user = ObjectMapperUtils.map(userDto, User.class);
         revokeAllUserToken(user);
 
         // generate new token
@@ -72,8 +71,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) {
-        UserDto userDto = userService.findByEmail(requestDto.getEmail());
-        if (Objects.nonNull(userDto.getId())) {
+        User userExist = userService.findByEmail(requestDto.getEmail());
+        if (Objects.nonNull(userExist.getId())) {
             throw new AuthenException("user email exist");
         }
 
@@ -118,15 +117,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             no need to check user authentication again when get refresh token
             but get user from DB by using findByEmail */
         if (Objects.nonNull(userEmail)) {
-            UserDto userDto = userService.findByEmail(userEmail);
+            User user = userService.findByEmail(userEmail);
 
-            if (Objects.isNull(userDto.getId())) {
+            if (Objects.isNull(user.getId())) {
                 throw new UsernameNotFoundException("user not found");
             }
 
-            User user = ObjectMapperUtils.map(userDto, User.class);
             boolean isValidToken = jwtService.isTokenValid(refreshToken, user);
-
             if (isValidToken) {
                 String accessToken = jwtService.generateToken(user);
 
@@ -160,7 +157,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void revokeAllUserToken(User user) {
-        List<TokenDto> validUserTokens = tokenService.findAllValidTokenByUserId(user.getId());
+        List<Token> validUserTokens = tokenService.findAllValidTokenByUserId(user.getId());
 
         if (CollectionUtils.isEmpty(validUserTokens)) {
             return;
@@ -171,8 +168,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             token.setExpired(true);
         });
 
-        List<Token> tokens = ObjectMapperUtils.mapAll(validUserTokens, Token.class);
-        tokenService.saveAll(tokens);
+        tokenService.saveAll(validUserTokens);
     }
 
 }

@@ -1,8 +1,6 @@
 package com.example.spring.authentication.service.impl;
 
-import com.example.spring.authentication.dto.UserDto;
 import com.example.spring.authentication.entity.User;
-import com.example.spring.authentication.mapper.ObjectMapperUtils;
 import com.example.spring.authentication.repository.UserRepository;
 import com.example.spring.authentication.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +15,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repo;
 
     @Override
-    public UserDto findByEmail(String email) {
+    public User findByEmail(String email) {
         Optional<User> optUser = repo.findByEmail(email);
-        if (optUser.isEmpty()) {
-            return new UserDto();
-        }
-
-        return ObjectMapperUtils.map(optUser.get(), UserDto.class);
+        return optUser.orElseGet(User::new);
     }
 
     @Override
