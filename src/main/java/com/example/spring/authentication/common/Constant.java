@@ -12,4 +12,10 @@ public class Constant {
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER = "Bearer ";
     public static final int JWT_BEARER_INDEX = 7;
+
+    public static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
+    public static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
+    public static final String MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
+
+    public static final String USER_NAME_PROPERTY = "userName";
 }

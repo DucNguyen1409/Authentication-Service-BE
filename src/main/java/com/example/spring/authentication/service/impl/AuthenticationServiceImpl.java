@@ -3,18 +3,13 @@ package com.example.spring.authentication.service.impl;
 import com.example.spring.authentication.common.Constant;
 import com.example.spring.authentication.dto.AuthenticationRequestDto;
 import com.example.spring.authentication.dto.AuthenticationResponseDto;
-import com.example.spring.authentication.dto.TokenDto;
-import com.example.spring.authentication.dto.UserDto;
 import com.example.spring.authentication.entity.Token;
 import com.example.spring.authentication.entity.TokenType;
 import com.example.spring.authentication.entity.User;
 import com.example.spring.authentication.exception.AuthenException;
-import com.example.spring.authentication.mapper.ObjectMapperUtils;
-import com.example.spring.authentication.service.AuthenticationService;
-import com.example.spring.authentication.service.JwtService;
-import com.example.spring.authentication.service.TokenService;
-import com.example.spring.authentication.service.UserService;
+import com.example.spring.authentication.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +29,17 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private final AuthenticationManager authenticationManager;
+
+    private final PasswordEncoder passwordEncoder;
+
     private final UserService userService;
 
     private final TokenService tokenService;
 
     private final JwtService jwtService;
 
-    private final AuthenticationManager authenticationManager;
-
-    private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     @Override
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto) {
@@ -70,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) {
+    public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) throws MessagingException {
         User userExist = userService.findByEmail(requestDto.getEmail());
         if (Objects.nonNull(userExist.getId())) {
             throw new AuthenException("user email exist");
@@ -92,6 +89,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // save token
         saveUserToken(user, accessToken);
+
+        // send email
+        mailService.sendUserRegisterEmail(user.getEmail(), user.getName());
+
         return AuthenticationResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

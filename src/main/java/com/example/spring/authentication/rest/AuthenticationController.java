@@ -3,6 +3,7 @@ package com.example.spring.authentication.rest;
 import com.example.spring.authentication.dto.AuthenticationRequestDto;
 import com.example.spring.authentication.dto.AuthenticationResponseDto;
 import com.example.spring.authentication.service.AuthenticationService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody AuthenticationRequestDto requestDto)
+            throws MessagingException {
         return ResponseEntity.ok(authenticationService.register(requestDto));
     }
 
