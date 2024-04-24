@@ -17,5 +17,11 @@ public class Constant {
     public static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
     public static final String MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
 
-    public static final String USER_NAME_PROPERTY = "userName";
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class MailTemplateProperty {
+        public static final String NAME_PROPERTY = "name";
+        public static final String EMAIL_PROPERTY = "email";
+        public static final String ROLE_PROPERTY = "role";
+
+    }
 }

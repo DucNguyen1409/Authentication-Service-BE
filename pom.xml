@@ -101,6 +101,12 @@
 			<version>3.2.0</version>
 		</dependency>
 
+		<!--	Rabbit mq	-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

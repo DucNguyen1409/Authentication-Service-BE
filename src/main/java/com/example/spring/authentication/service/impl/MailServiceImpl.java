@@ -2,6 +2,7 @@ package com.example.spring.authentication.service.impl;
 
 import com.example.spring.authentication.common.Constant;
 import com.example.spring.authentication.config.MailConfig;
+import com.example.spring.authentication.dto.CustomerDto;
 import com.example.spring.authentication.service.MailService;
 import com.example.spring.authentication.utils.Base64Utils;
 import jakarta.mail.MessagingException;
@@ -24,21 +25,23 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
+    private static final String MAIL_REGISTER_TITLE = "Account Registration Successful";
+
     private final MailConfig mailConfig;
 
     private final SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendUserRegisterEmail(String mailTo, String userName) throws MessagingException {
-        log.info("[MailServiceImpl] sendUserRegisterEmail");
+    public void sendUserRegisterEmail(CustomerDto customerDto) throws MessagingException {
+        log.info("[MailServiceImpl] sendUserRegisterEmail: {}", customerDto);
         // get mime message
         JavaMailSenderImpl mailSender = getMailSender();
-        String subject = "Register Success";
-        MimeMessage mimeMessage = getMimeMessage(mailSender, mailTo,
-                userName, mailConfig.getRegisterTemplateName(), subject);
+        MimeMessage mimeMessage = getMimeMessage(mailSender, customerDto,
+                mailConfig.getRegisterTemplateName(), MAIL_REGISTER_TITLE);
 
         // send mail
         mailSender.send(mimeMessage);
+        log.info("[MailServiceImpl] sendUserRegisterEmail::send mail to: {}", customerDto.getEmail());
     }
 
     @Override
@@ -58,12 +61,14 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public MimeMessage getMimeMessage(JavaMailSenderImpl mailSender, String recipient, String userName,
+    public MimeMessage getMimeMessage(JavaMailSenderImpl mailSender, CustomerDto customerDto,
                                       String templateName, String subject) throws MessagingException {
         // set mailer sender
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         Map<String, Object> properties = new HashMap<>();
-        properties.put(Constant.USER_NAME_PROPERTY, userName);
+        properties.put(Constant.MailTemplateProperty.NAME_PROPERTY, customerDto.getName());
+        properties.put(Constant.MailTemplateProperty.EMAIL_PROPERTY, customerDto.getEmail());
+        properties.put(Constant.MailTemplateProperty.ROLE_PROPERTY, customerDto.getRole());
 
         // set username
         Context context = new Context();
@@ -71,7 +76,7 @@ public class MailServiceImpl implements MailService {
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, mailConfig.getEncoding());
         helper.setFrom(mailConfig.getUserName());
-        helper.setTo(InternetAddress.parse(recipient));
+        helper.setTo(InternetAddress.parse(customerDto.getEmail()));
         helper.setSubject(subject);
         helper.setText(templateEngine.process(templateName, context), true);
 

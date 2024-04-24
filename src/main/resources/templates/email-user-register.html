@@ -6,8 +6,15 @@
     </head>
     <body>
         <div>
-            <h3>Dear <span th:text="${userName}"></span>, your account register success!!</h3>
-            <h3>Best regards</h3>
+            <h1>Account Registration Successful</h1>
+            <p>Dear <span th:text="${name}"></span>, Your account has been successfully registered!!</p>
+            <p>Account information details: </p>
+            <ul>
+                <li>Email: <span th:text="${email}"></span></li>
+                <li>Name: <span th:text="${name}"></span></li>
+                <li>Role: <span th:text="${role}"></span></li>
+            </ul>
+            <p>Best regards</p>
         </div>
     </body>
 </html>

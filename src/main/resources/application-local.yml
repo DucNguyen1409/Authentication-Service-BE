@@ -28,7 +28,6 @@ spring:
     username: personalauthenticationapp@gmail.com
     password: bW5yZyB0ZHZ6IHRxZ2EgZGJ1cQ==
     protocol: smtp
-
     properties:
       mail:
         smtp:

@@ -3,10 +3,12 @@ package com.example.spring.authentication.service.impl;
 import com.example.spring.authentication.common.Constant;
 import com.example.spring.authentication.dto.AuthenticationRequestDto;
 import com.example.spring.authentication.dto.AuthenticationResponseDto;
+import com.example.spring.authentication.dto.CustomerDto;
 import com.example.spring.authentication.entity.Token;
 import com.example.spring.authentication.entity.TokenType;
 import com.example.spring.authentication.entity.User;
 import com.example.spring.authentication.exception.AuthenException;
+import com.example.spring.authentication.rabbitmq.Producer;
 import com.example.spring.authentication.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
@@ -39,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
 
-    private final MailService mailService;
+    private final Producer producer;
 
     @Override
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto) {
@@ -67,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) throws MessagingException {
+    public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) {
         User userExist = userService.findByEmail(requestDto.getEmail());
         if (Objects.nonNull(userExist.getId())) {
             throw new AuthenException("user email exist");
@@ -90,8 +92,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // save token
         saveUserToken(user, accessToken);
 
-        // send email
-        mailService.sendUserRegisterEmail(user.getEmail(), user.getName());
+        // send customer info to rabbit mq
+        CustomerDto customerDto = CustomerDto.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .build();
+        producer.send(customerDto);
 
         return AuthenticationResponseDto.builder()
                 .accessToken(accessToken)
