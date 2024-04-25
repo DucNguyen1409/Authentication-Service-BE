@@ -107,14 +107,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public AuthenticationResponseDto refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
 
         // check valid jwt token
         if (Objects.isNull(authHeader) || !authHeader.startsWith(Constant.BEARER)) {
-            return;
+            throw new AuthenException("Authorization failed");
         }
 
         // extract token
@@ -139,16 +139,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 revokeAllUserToken(user);
                 saveUserToken(user, accessToken);
 
-                AuthenticationResponseDto authenResponseDto = AuthenticationResponseDto.builder()
+                return AuthenticationResponseDto.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
 
-                // write body of the response
-                new ObjectMapper().writeValue(response.getOutputStream(), authenResponseDto);
             }
-
         }
+        throw new AuthenException("Authorization failed");
     }
 
     @Override

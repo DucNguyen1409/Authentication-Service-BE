@@ -22,10 +22,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody AuthenticationRequestDto requestDto)
-            throws MessagingException {
-        return ResponseEntity.ok(authenticationService.register(requestDto));
+    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody AuthenticationRequestDto requestDto) {
+        return new ResponseEntity<>(authenticationService.register(requestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -34,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        authenticationService.refreshToken(request, response);
+    public ResponseEntity<AuthenticationResponseDto> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return ResponseEntity.ok(authenticationService.refreshToken(request, response));
     }
 }

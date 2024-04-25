@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static com.example.spring.authentication.common.Constant.*;
 import static com.example.spring.authentication.entity.Permission.*;
-import static com.example.spring.authentication.entity.Role.*;
+import static com.example.spring.authentication.entity.Role.ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +38,8 @@ public class SecurityConfig {
         // filter chain custom
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests()
+//                .requestMatchers("/**")
+//                .permitAll()
                 .requestMatchers(AUTH_WHITE_LIST) // some matcher no need to auth => permit all
                     .permitAll()
                 .requestMatchers(ADMIN_API_URL).hasRole(ADMIN.name())
