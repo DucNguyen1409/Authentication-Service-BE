@@ -1,3 +1,8 @@
+# general config
+server:
+  port: 8080
+
+# database mysql config
 spring:
   datasource:
     driver-class-name: org.h2.Driver
@@ -6,3 +11,24 @@ spring:
     password: sa
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+
+# mail config
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: personalauthenticationapp@gmail.com
+    password: bW5yZyB0ZHZ6IHRxZ2EgZGJ1cQ==
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          starttls: true
+        auth: true
+    smtp:
+      ssl:
+        protocols: TLSv1.2
+
+    template:
+      register-template-name: email-user-register.html

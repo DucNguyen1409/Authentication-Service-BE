@@ -1,0 +1,37 @@
+version: "3"
+services:
+  mysql:
+    image: mysql/mysql-server
+#    container_name: mysql-server
+    restart: always
+    environment:
+      - 'MYSQL_DATABASE=authenticate_db'
+      - 'MYSQL_ROOT_PASSWORD: root'
+      - 'MYSQL_USER=root'
+      - 'MYSQL_PASSWORD=root'
+    ports:
+      - "3306:3306"
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672" #JMS Port
+      - "15672:15672" #Management Port - default user:pass = guest:guest
+
+  spring-app:
+    image: authentication:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/authenticate_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    links:
+      - rabbitmq
