@@ -7,11 +7,9 @@ import com.example.spring.authentication.dto.CustomerDto;
 import com.example.spring.authentication.entity.Token;
 import com.example.spring.authentication.entity.TokenType;
 import com.example.spring.authentication.entity.User;
-import com.example.spring.authentication.exception.AuthenException;
+import com.example.spring.authentication.exception.UnauthenticatedException;
 import com.example.spring.authentication.rabbitmq.Producer;
 import com.example.spring.authentication.service.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponseDto register(AuthenticationRequestDto requestDto) {
         User userExist = userService.findByEmail(requestDto.getEmail());
         if (Objects.nonNull(userExist.getId())) {
-            throw new AuthenException("user email exist");
+            throw new UnauthenticatedException("user email exist");
         }
 
         User user = User.builder()
@@ -114,7 +112,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // check valid jwt token
         if (Objects.isNull(authHeader) || !authHeader.startsWith(Constant.BEARER)) {
-            throw new AuthenException("Authorization failed");
+            throw new UnauthenticatedException("Authorization failed");
         }
 
         // extract token
@@ -146,7 +144,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             }
         }
-        throw new AuthenException("Authorization failed");
+        throw new UnauthenticatedException("Authorization failed");
     }
 
     @Override

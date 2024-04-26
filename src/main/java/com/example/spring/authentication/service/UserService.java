@@ -12,4 +12,10 @@ public interface UserService {
 
     List<UserDto> findAll();
 
+    User findById(final String id);
+
+    void updateName(final String id, final String name);
+
+    Boolean existsById(final String id);
+
 }

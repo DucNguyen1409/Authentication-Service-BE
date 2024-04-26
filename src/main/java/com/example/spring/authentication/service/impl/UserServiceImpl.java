@@ -2,6 +2,7 @@ package com.example.spring.authentication.service.impl;
 
 import com.example.spring.authentication.dto.UserDto;
 import com.example.spring.authentication.entity.User;
+import com.example.spring.authentication.exception.UserNotFoundException;
 import com.example.spring.authentication.mapper.ObjectMapperUtils;
 import com.example.spring.authentication.repository.UserRepository;
 import com.example.spring.authentication.service.UserService;
@@ -38,6 +39,26 @@ public class UserServiceImpl implements UserService {
         }
 
         return ObjectMapperUtils.mapAll(entities, UserDto.class);
+    }
+
+    @Override
+    public User findById(String id) {
+        Optional<User> optUser = repo.findById(id);
+        return optUser.orElseThrow(() -> new UserNotFoundException("user not found"));
+    }
+
+    @Override
+    public void updateName(String id, String name) {
+        User user = findById(id);
+        user.setName(name);
+
+        // save user
+        repo.save(user);
+    }
+
+    @Override
+    public Boolean existsById(String id) {
+        return repo.existsById(id);
     }
 
 }
