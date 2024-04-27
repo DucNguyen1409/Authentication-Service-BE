@@ -1,7 +1,7 @@
 The project is Authentication service from Java backend application and register, authentication user.
 
 Feature:
-- API register
+- API register, refresh token, get the users ...
 - send Gmail to confirm register success
   
 Using:
