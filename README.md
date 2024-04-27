@@ -15,4 +15,5 @@ TODO:
 - Change JWT token to Keycloak
 - Integration with Angular Frontend
 - Redis for caching data request
+- Role and Permission for User
 - ...

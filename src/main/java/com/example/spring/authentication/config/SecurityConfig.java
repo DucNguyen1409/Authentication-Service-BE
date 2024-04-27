@@ -38,8 +38,6 @@ public class SecurityConfig {
         // filter chain custom
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests()
-//                .requestMatchers("/**")
-//                .permitAll()
                 .requestMatchers(AUTH_WHITE_LIST) // some matcher no need to auth => permit all
                     .permitAll()
                 .requestMatchers(ADMIN_API_URL).hasRole(ADMIN.name())
@@ -47,10 +45,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, ADMIN_API_URL).hasAuthority(ADMIN_CREATE.name())
                 .requestMatchers(HttpMethod.PUT, ADMIN_API_URL).hasAuthority(ADMIN_UPDATE.name())
                 .requestMatchers(HttpMethod.DELETE, ADMIN_API_URL).hasAuthority(ADMIN_DELETE.name())
-//                .requestMatchers(HttpMethod.GET, USER_API_URL).hasAnyAuthority(USER_READ.name(), ADMIN_READ.name())
-//                .requestMatchers(HttpMethod.POST, USER_API_URL).hasAuthority(USER_CREATE.name())
-//                .requestMatchers(HttpMethod.PUT, USER_API_URL).hasAuthority(USER_UPDATE.name())
-//                .requestMatchers(HttpMethod.DELETE, USER_API_URL).hasAnyAuthority(USER_DELETE.name())
                 .anyRequest()
                 .authenticated()
                 .and()

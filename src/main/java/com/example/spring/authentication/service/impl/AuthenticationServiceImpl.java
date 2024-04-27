@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto) {
         // authenticate user request
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPasswd())
+                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword())
         );
 
         // find user token before generate new one.
@@ -76,7 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = User.builder()
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
-                .passwd(passwordEncoder.encode(requestDto.getPasswd()))
+                .password(passwordEncoder.encode(requestDto.getPassword()))
                 .role(requestDto.getRole())
                 .build();
 
