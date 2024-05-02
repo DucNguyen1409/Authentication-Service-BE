@@ -1,28 +1,31 @@
 version: "3"
 services:
   mysql:
-    image: mysql/mysql-server
-#    container_name: mysql-server
+    container_name: mysql-server-saa
+    image: mysql
     restart: always
     environment:
       - 'MYSQL_DATABASE=authenticate_db'
-      - 'MYSQL_ROOT_PASSWORD: root'
-      - 'MYSQL_USER=root'
+      - 'MYSQL_ROOT_PASSWORD=root'
       - 'MYSQL_PASSWORD=root'
     ports:
       - "3306:3306"
+    networks:
+      - spring-demo
 
   rabbitmq:
-    image: rabbitmq:management
+    container_name: rabbit-server-saa
+    image: rabbitmq
     ports:
       - "5672:5672" #JMS Port
       - "15672:15672" #Management Port - default user:pass = guest:guest
+    networks:
+      - spring-demo
 
   spring-app:
-    image: authentication:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    container_name: saa-api
+    image: saa/saa:1.0.0
+    restart: always
     depends_on:
       - mysql
       - rabbitmq
@@ -33,5 +36,9 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_RABBITMQ_HOST=rabbitmq
-    links:
-      - rabbitmq
+    networks:
+      - spring-demo
+
+networks:
+  spring-demo:
+    driver: bridge
