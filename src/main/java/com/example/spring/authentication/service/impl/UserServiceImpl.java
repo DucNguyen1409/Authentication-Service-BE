@@ -8,6 +8,9 @@ import com.example.spring.authentication.repository.UserRepository;
 import com.example.spring.authentication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,6 +62,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean existsById(String id) {
         return repo.existsById(id);
+    }
+
+    @Override
+    public User getCurrentUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optUser = repo.findByName(authentication.getName());
+
+        return optUser.orElseGet(User::new);
     }
 
 }

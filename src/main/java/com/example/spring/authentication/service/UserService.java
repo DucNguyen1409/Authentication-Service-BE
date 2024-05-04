@@ -18,4 +18,6 @@ public interface UserService {
 
     Boolean existsById(final String id);
 
+    User getCurrentUserInfo();
+
 }
