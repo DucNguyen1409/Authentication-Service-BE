@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +29,12 @@ public class Token {
     private Boolean expired;
 
     private Boolean revoked;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime expiresAt;
+
+    private LocalDateTime validatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

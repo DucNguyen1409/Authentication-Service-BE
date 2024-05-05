@@ -12,26 +12,47 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String TOPIC_EXCHANGE_NAME = "RegisterEmailTopicExchange";
-    public static final String QUEUE_NAME = "EmailRegister";
-    public static final String ROUTING_KEY = "register.email.#";
+    public static final String TOPIC_REGISTER_EXCHANGE_NAME = "RegisterEmailTopicExchange";
+    public static final String TOPIC_ACTIVATE_EXCHANGE_NAME = "ActivateEmailTopicExchange";
+    public static final String QUEUE_USER_REGISTER_NAME = "EmailRegister";
+    public static final String QUEUE_ACTIVATION_ACCOUNT_NAME = "EmailActivate";
+    public static final String REGISTER_ROUTING_KEY = "register.email.#";
+    public static final String ACTIVATE_ROUTING_KEY = "activate.email.#";
 
     @Bean
-    Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+    Queue registerQueue() {
+        return new Queue(QUEUE_USER_REGISTER_NAME, false);
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(TOPIC_EXCHANGE_NAME);
+    Queue activateQueue() {
+        return new Queue(QUEUE_ACTIVATION_ACCOUNT_NAME, false);
     }
 
     @Bean
-    Binding bindingSendRegisterEmail(Queue queue, TopicExchange topicExchange) {
+    TopicExchange registerExchange() {
+        return new TopicExchange(TOPIC_REGISTER_EXCHANGE_NAME);
+    }
+
+    @Bean
+    TopicExchange activateExchange() {
+        return new TopicExchange(TOPIC_ACTIVATE_EXCHANGE_NAME);
+    }
+
+    @Bean
+    Binding bindingSendRegisterEmail() {
         return BindingBuilder
-                .bind(queue)
-                .to(exchange())
-                .with(ROUTING_KEY);
+                .bind(registerQueue())
+                .to(registerExchange())
+                .with(REGISTER_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding bindingSendActivateEmail() {
+        return BindingBuilder
+                .bind(activateQueue())
+                .to(activateExchange())
+                .with(ACTIVATE_ROUTING_KEY);
     }
 
     @Bean
@@ -45,7 +66,8 @@ public class RabbitMQConfig {
     @Bean
     public DefaultJackson2JavaTypeMapper typeMapper() {
         DefaultJackson2JavaTypeMapper mapper = new DefaultJackson2JavaTypeMapper();
-        mapper.setTrustedPackages("com.example.spring.authentication.dto");
+        mapper.setTrustedPackages("com.example.spring.authentication.dto",
+                                "com.example.spring.authentication.ActivateAccountDto");
 
         return mapper;
     }

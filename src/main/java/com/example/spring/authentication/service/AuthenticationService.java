@@ -12,9 +12,11 @@ public interface AuthenticationService {
 
     AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto);
 
-    AuthenticationResponseDto register(AuthenticationRequestDto requestDto);
+    void register(AuthenticationRequestDto requestDto);
 
     AuthenticationResponseDto refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     void saveUserToken(final User user, final String jwtToken);
+
+    void activateAccount(final String token);
 }

@@ -22,6 +22,8 @@ public class Constant {
         public static final String NAME_PROPERTY = "name";
         public static final String EMAIL_PROPERTY = "email";
         public static final String ROLE_PROPERTY = "role";
+        public static final String CONFIRM_URL_PROPERTY = "confirmUrl";
+        public static final String CODE_PROPERTY = "code";
 
     }
 }

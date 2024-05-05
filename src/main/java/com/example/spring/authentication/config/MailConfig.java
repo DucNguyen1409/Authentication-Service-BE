@@ -35,4 +35,7 @@ public class MailConfig {
     @Value("${spring.mail.template.register-template-name}")
     private String registerTemplateName;
 
+    @Value("${spring.mail.template.activate-template-name}")
+    private String activateTemplateName;
+
 }

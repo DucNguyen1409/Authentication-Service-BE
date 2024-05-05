@@ -11,3 +11,6 @@ application:
       expiration: 86400000 #expriration after 1 day.
       refresh-token:
         expiration: 604800000 #expriration 7 days
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account

@@ -6,6 +6,7 @@ import com.example.spring.authentication.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public class TaskRest {
 
     private final TaskService taskService;
 
-//    @Secured("ROLE_ADMIN")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TaskDto>> findAll() {
         log.info("[TaskRest] findAll");
         List<TaskDto> results = taskService.findAll();

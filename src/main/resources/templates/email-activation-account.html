@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title th:remove="all">Account Activation</title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+    <div>
+        <h1>Account Activation</h1>
+        <p>Dear <span th:text="${name}"></span>,</p>
+        <p>Thank you for signing up! Please use the following activation code to activate your account</p>
+        <ul>
+            <li>Code: <span th:text="${code}"></span></li>
+            <li>
+                Link: <a th:href="${confirmUrl}" target="_blank">Activation account</a>
+            </li>
+        </ul>
+        <p>Best regards</p>
+    </div>
+    </body>
+</html>

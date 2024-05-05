@@ -25,6 +25,7 @@ public class ApplicationConfig {
 
     @Value("${spring.cors.origins:*}")
     private List<String> AllowedOrigins;
+
     private final UserRepository userRepository;
 
     @Bean
