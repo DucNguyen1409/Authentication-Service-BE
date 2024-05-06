@@ -24,7 +24,18 @@ import static com.example.spring.authentication.common.Constant.LOG_OUT_URL;
 public class SecurityConfig {
 
     // white list
-    private static final String[] AUTH_WHITE_LIST = { "/api/v1/auth/**" };
+    private static final String[] AUTH_WHITE_LIST = {
+            "/api/v1/auth/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html"
+    };
 
     private final JwtAuthentication jwtAuthentication;
     private final AuthenticationProvider authenticationProvider;
