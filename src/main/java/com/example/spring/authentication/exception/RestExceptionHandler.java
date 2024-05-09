@@ -3,6 +3,7 @@ package com.example.spring.authentication.exception;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,93 +22,110 @@ import java.util.Set;
 public class RestExceptionHandler {
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public ResponseException handleMethodArgumentNotValidException(MethodArgumentNotValidException exception,
-                                                                   WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception,
+                                                                                  WebRequest webRequest) {
         Set<String> errors = new HashSet<>();
         exception.getBindingResult().getAllErrors().forEach(error -> {
-            var errorMsg  = error.getDefaultMessage();
+            var errorMsg = error.getDefaultMessage();
             errors.add(errorMsg);
         });
 
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.BAD_REQUEST,
-                null, null);
-        responseException.setValidationErrors(errors);
+                errors, null);
         log.error(String.valueOf(responseException), exception);
 
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(responseException);
     }
 
     @ExceptionHandler(value = {ActivateTokenExpiredException.class})
-    public ResponseException handleActivateTokenExpired(ActivateTokenExpiredException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleActivateTokenExpired(ActivateTokenExpiredException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.UNAUTHORIZED,
-                exception.getMessage(), null);
+                Collections.singleton(exception.getMessage()), null);
         log.error(String.valueOf(responseException), exception);
 
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(responseException);
     }
 
     @ExceptionHandler(value = {DisabledException.class})
-    public ResponseException handleDisabledException(DisabledException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleDisabledException(DisabledException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.BAD_REQUEST,
-                exception.getMessage(), null);
+                Collections.singleton(exception.getMessage()), null);
         log.error(String.valueOf(responseException), exception);
 
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(responseException);
     }
 
     @ExceptionHandler(value = {UnauthenticatedException.class})
-    public ResponseException handleUnauthenticatedException(UnauthenticatedException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleUnauthenticatedException(UnauthenticatedException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.UNAUTHORIZED,
-                exception.getMessage(), null);
+                Collections.singleton(exception.getMessage()), null);
         log.error(String.valueOf(responseException), exception);
 
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(responseException);
     }
 
     @ExceptionHandler(value = {MessagingException.class})
-    public ResponseException handleMessagingException(MessagingException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleMessagingException(MessagingException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.INTERNAL_SERVER_ERROR,
-                "Internal error, contact the Admin", null);
+                Collections.singleton("Internal error, contact the Admin"), null);
         exception.printStackTrace();
         log.error(String.valueOf(responseException), exception);
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(responseException);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseException handleException(final Exception exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleException(final Exception exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.INTERNAL_SERVER_ERROR,
-                "Internal error, contact the Admin", null);
+                Collections.singleton("Internal error, contact the Admin"), null);
         exception.printStackTrace();
         log.error(String.valueOf(responseException), exception);
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(responseException);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseException handleUsernameNotFoundException(final UsernameNotFoundException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleUsernameNotFoundException(final UsernameNotFoundException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.BAD_REQUEST,
-                exception.getMessage(), null);
+                Collections.singleton(exception.getMessage()), null);
         log.error(String.valueOf(responseException), exception);
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(responseException);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseException handleUserNotFoundException(final UserNotFoundException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleUserNotFoundException(final UserNotFoundException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.BAD_REQUEST,
-                exception.getMessage(), null);
+                Collections.singleton(exception.getMessage()), null);
         log.error(String.valueOf(responseException), exception);
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(responseException);
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseException handleAuthenticationException(final AuthenticationException exception, WebRequest webRequest) {
+    public ResponseEntity<ResponseException> handleAuthenticationException(final AuthenticationException exception, WebRequest webRequest) {
         final ResponseException responseException = buildResponseException(webRequest, HttpStatus.BAD_REQUEST,
-                exception.getMessage(), exception.getCode());
+                Collections.singleton(exception.getMessage()), exception.getCode());
         log.error(String.valueOf(responseException), exception);
-        return responseException;
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(responseException);
     }
 
     private ResponseException buildResponseException(WebRequest webRequest, HttpStatus httpStatus,
-                                                     String message, String code) {
+                                                     Set<String> message, String code) {
         return ResponseException.builder()
                 .path(((ServletWebRequest) webRequest).getRequest().getRequestURI())
                 .localDateTime(LocalDateTime.now())

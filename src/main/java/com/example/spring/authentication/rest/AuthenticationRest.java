@@ -17,13 +17,13 @@ import java.io.IOException;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
-public class AuthenticationController {
+public class AuthenticationRest {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody @Valid AuthenticationRequestDto requestDto) {
+    public ResponseEntity<?> register(@RequestBody @Valid AuthenticationRequestDto requestDto) {
         authenticationService.register(requestDto);
 
         return ResponseEntity.accepted().build();

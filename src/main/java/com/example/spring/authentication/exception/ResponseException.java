@@ -1,5 +1,6 @@
 package com.example.spring.authentication.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +14,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseException {
     private String path;
     private String code;
-    private String message;
-    private Set<String> validationErrors;
+    private Set<String> message;
     private HttpStatus httpStatus;
     private LocalDateTime localDateTime;
 }

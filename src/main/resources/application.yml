@@ -13,4 +13,4 @@ application:
         expiration: 604800000 #expriration 7 days
   mailing:
     frontend:
-      activation-url: http://localhost:4200/activate-account
+      activation-url: http://localhost:4200/activation-account

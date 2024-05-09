@@ -89,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void register(AuthenticationRequestDto requestDto) {
         User userExist = userService.findByEmail(requestDto.getEmail());
         if (Objects.nonNull(userExist.getId())) {
-            throw new UnauthenticatedException("user email exist");
+            throw new UnauthenticatedException("user email already exist");
         }
 
         // get role
