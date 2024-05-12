@@ -1,10 +1,7 @@
 package com.example.spring.authentication.service.impl;
 
 import com.example.spring.authentication.common.Constant;
-import com.example.spring.authentication.dto.ActivateAccountDto;
-import com.example.spring.authentication.dto.AuthenticationRequestDto;
-import com.example.spring.authentication.dto.AuthenticationResponseDto;
-import com.example.spring.authentication.dto.CustomerDto;
+import com.example.spring.authentication.dto.*;
 import com.example.spring.authentication.entity.Role;
 import com.example.spring.authentication.entity.Token;
 import com.example.spring.authentication.entity.TokenType;
@@ -27,7 +24,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void register(AuthenticationRequestDto requestDto) {
+    public void register(RegisterRequestDto requestDto) {
         User userExist = userService.findByEmail(requestDto.getEmail());
         if (Objects.nonNull(userExist.getId())) {
             throw new UnauthenticatedException("user email already exist");

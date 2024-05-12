@@ -1,6 +1,7 @@
 package com.example.spring.authentication.rest;
 
 import com.example.spring.authentication.dto.AuthenticationRequestDto;
+import com.example.spring.authentication.dto.RegisterRequestDto;
 import com.example.spring.authentication.dto.AuthenticationResponseDto;
 import com.example.spring.authentication.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,14 +24,13 @@ public class AuthenticationRest {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> register(@RequestBody @Valid AuthenticationRequestDto requestDto) {
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDto requestDto) {
         authenticationService.register(requestDto);
-
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto requestDto) {
         return ResponseEntity.ok(authenticationService.authenticate(requestDto));
     }
 
