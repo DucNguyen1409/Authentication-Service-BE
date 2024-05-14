@@ -5,7 +5,7 @@ pipeline {
         maven 'my-maven'
     }
     environment {
-        MYSQL_ROOT_LOGIN = credentials('mysql-root-login')
+        MYSQL_ROOT_LOGIN = credentials('mysql-root')
     }
     stages {
         stage('Build project with Maven') {
@@ -34,7 +34,7 @@ pipeline {
                 sh 'echo y | docker container prune'
                 // sh 'docker volume rm mysql-server-data || echo "no volume"'
 
-                sh 'docker run --name mysql-server-saa --rm --network spring-demo -e MYSQL_ROOT_PASSWORD=${MY_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=authenticate_db -d mysql:mysql-server'
+                sh 'docker run --name mysql-server-saa --rm --network spring-demo -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=authenticate_db -d mysql:mysql-server'
                 sh 'sleep 20'
             }
         }
