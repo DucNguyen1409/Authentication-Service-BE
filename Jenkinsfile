@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('Packaging|Pushing images') {
+        stage('Packaging | Pushing images') {
             steps {
                 withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
                     sh 'docker build -t nguyenduc1409/saa:1.0.0 -f deployment/docker/Dockerfile .'
@@ -40,9 +40,9 @@ pipeline {
         }
     }
 
-    post  {
-        always {
-            cleanWs()
-        }
-    }
+    //post  {
+    //    always {
+    //        cleanWs()
+    //    }
+    //}
 }
