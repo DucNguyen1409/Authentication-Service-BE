@@ -26,15 +26,17 @@ pipeline {
         }
 
         stage('Deploy MySQL') {
-            echo 'Deploying'
-            sh 'docker image pull mysql:mysql-server'
-            sh 'docker network create spring-demo || echo "this network exists"'
-            sh 'docker container stop mysql-server-saa || echo "this container does not exist"'
-            sh 'echo y | docker container prune'
-            // sh 'docker volume rm mysql-server-data || echo "no volume"'
+            steps {
+                echo 'Deploying'
+                sh 'docker image pull mysql:mysql-server'
+                sh 'docker network create spring-demo || echo "this network exists"'
+                sh 'docker container stop mysql-server-saa || echo "this container does not exist"'
+                sh 'echo y | docker container prune'
+                // sh 'docker volume rm mysql-server-data || echo "no volume"'
 
-            sh 'docker run --name mysql-server-saa --rm --network spring-demo -e MYSQL_ROOT_PASSWORD=${MY_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=authenticate_db -d mysql:mysql-server'
-            sh 'sleep 20'
+                sh 'docker run --name mysql-server-saa --rm --network spring-demo -e MYSQL_ROOT_PASSWORD=${MY_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=authenticate_db -d mysql:mysql-server'
+                sh 'sleep 20'
+            }
         }
     }
 
